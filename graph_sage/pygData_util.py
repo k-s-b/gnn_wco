@@ -27,6 +27,14 @@ import dataset
 
 class GraphData(object):
     def __init__(self,data, categories = ["HS6","importer.id"], use_xgb=True):
+        '''
+        Generate dataset in pytorch-geometric format
+        This class extract bipartite graph that links transaction to target categories
+        Args:
+            data (Custuom dataset): customs dataset obtainable from dataset.py
+            categories (List(str)): list of target categories for bipartite graph
+            use_xgb (bool): if True, use pre-trained XGB multi-hot vector as input. otherwise the raw feature is used
+        '''
         self.data = data
         self.node_num = 0 
         self.edge_index = None
@@ -48,9 +56,11 @@ class GraphData(object):
             self.prepare_df()
         
     def train_xgb_model(self):
-        """ Train XGB model """
+        ''' 
+        Train XGB model to obtain leaf indices
+        '''
         print("Training XGBoost model...")
-        self.xgb = XGBClassifier(n_estimators=self.num_trees, max_depth=self.depth, n_jobs=-1, eval_metric="error")
+        self.xgb = XGBClassifier(n_estimators=self.num_trees, max_depth=self.depth, n_jobs=-1, eval_metric="error", scale_pos_weight = 200)
         self.xgb.fit(self.data.dftrainx_lab, self.data.train_cls_label)   
     
         # Get leaf index from xgboost model 
@@ -71,6 +81,9 @@ class GraphData(object):
                                           transformed_leaves[valid_rows:]
         
     def prepare_df(self):
+        '''
+        Normalize input DataFrame to (0,1) to train NN
+        '''
         train_data = pd.concat((self.data.dftrainx_lab,self.data.dftrainx_unlab))
         self.leaf_dim = train_data.shape[1]
         self.scaler = MinMaxScaler()
@@ -102,6 +115,12 @@ class GraphData(object):
         return raw_df, feature
     
     def _getNid(self,x):
+        '''
+        Return node indice from a given id
+        If the target id is not in current graph, create a new node for it
+        Args:
+            x : identifier of a node
+        '''
         # get node index from raw data
         if x in self.id2n.keys():
             return self.id2n[x]
@@ -122,14 +141,22 @@ class GraphData(object):
             return torch.FloatTensor(self.data.norm_revenue_test)
         
     def get_AttNode(self,stage):
+        '''Get all node id for a certain stage'''
         nodes = [x for x,y in self.G.nodes(data=True) if y["att"]==stage]
         return nodes
-        
-    def _add_nodes(self,indices):
-        for i in indices:
-            self._getNid(i)
     
     def get_data(self,stage):
+        '''
+        obtain pyG data for a certain stage. 
+        The data contains
+            x: node feature
+            y: binary target for classification. 
+               The label of category nodes are initialized as -1
+            rev: additional revenue for dual task learning
+            edge_index: edges of the  graph
+            edge_att: type of edge denotes the relation between transaction and category
+            edge_label: 1 if one of node in the edge is illicit else 0  (not used)
+        '''
         pyg_data = Data()
         edges = []
         edge_att = []
@@ -179,6 +206,10 @@ class GraphData(object):
 
 
 def StackData(train_data, unlab_data, valid_data, test_data):
+    '''
+    stack pyG dataset.
+    because the valid/test data should include train/unlab edges
+    '''
     stack = Data()
     x, y, edge_index, edge_label, rev = [],[],[],[],[]
     
@@ -220,6 +251,9 @@ def StackData(train_data, unlab_data, valid_data, test_data):
 
 
 class Batch(NamedTuple):
+    '''
+    convert batch data for pytorch-lightning
+    '''
     x: Tensor
     y: Tensor
     rev: Tensor
@@ -236,6 +270,14 @@ class Batch(NamedTuple):
 
 class CustomData(LightningDataModule):
     def __init__(self,data,sizes, batch_size = 128):
+        '''
+        defining dataloader with NeighborSampler to extract k-hop subgraph.
+        Args:
+            data (Graphdata): graph data for the edges and node index
+            sizes ([int]): The number of neighbors to sample for each node in each layer. 
+                           If set to :obj:`sizes[l] = -1`, all neighbors are included
+            batch_size (int): batch size for training
+        '''
         super(CustomData,self).__init__()
         self.data = data
         self.sizes = sizes
