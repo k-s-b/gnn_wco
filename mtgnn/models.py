@@ -20,6 +20,10 @@ class LAConv(SAGEConv):
             p.requires_grad = False
     
     def forward(self, x, edge_index):
+        
+        '''
+        x - concat of x and unsupervised features
+        '''
 
         if isinstance(x, Tensor):
             x: OptPairTensor = (x, x)
@@ -203,6 +207,7 @@ class LabelPredictor(nn.Module):
         x = torch.cat([emb_abs, emb_sum, emb_mult], dim=-1)
         
         x = F.relu(self.ln(self.lin1(x)))
+        x = F.dropout(x, p=0.5, training=self.training)
         x = torch.sigmoid(self.lin2(x))
         
         return x
