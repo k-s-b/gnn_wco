@@ -1,32 +1,23 @@
-import datetime
-import random
-from collections import defaultdict
 from typing import List, NamedTuple, Optional
 
-import matplotlib.pyplot as plt
 import networkx as nx
 import numpy as np
 import pandas as pd
 import torch
-import torch.nn.functional as F
-from pytorch_lightning import (LightningDataModule, LightningModule, Trainer,
-                               seed_everything)
-from pytorch_lightning.callbacks import ModelCheckpoint
-from pytorch_lightning.metrics import Accuracy
-from sklearn.preprocessing import LabelEncoder, MinMaxScaler, OneHotEncoder
+from pytorch_lightning import LightningDataModule
+from sklearn.preprocessing import MinMaxScaler, OneHotEncoder
 from torch import Tensor
-from torch.nn import BatchNorm1d, ModuleList
-from torch_geometric.data import Data, DataLoader, Dataset, NeighborSampler
-from torch_geometric.utils import from_networkx, to_undirected
+from torch_geometric.data import Data, NeighborSampler
 from torch_sparse import SparseTensor
-from tqdm import tqdm, tqdm_notebook, trange
 from xgboost import XGBClassifier
-from utils import process_leaf_idx
+from sklearn.ensemble import GradientBoostingClassifier
+
 import dataset
+from utils import process_leaf_idx
 
 
 class GraphData(object):
-    def __init__(self,data, categories = ["HS6","importer.id"], use_xgb=True):
+    def __init__(self,data, categories = ["HS6","importer.id"], use_xgb=True, pos_weight = 2):
         '''
         Generate dataset in pytorch-geometric format
         This class extract bipartite graph that links transaction to target categories
@@ -37,8 +28,6 @@ class GraphData(object):
         '''
         self.data = data
         self.node_num = 0 
-        self.edge_index = None
-        self.edge_att = None # The edge type that connects two transaction
         self.categories = categories
         self.G = nx.Graph()
         
@@ -46,6 +35,7 @@ class GraphData(object):
         self.use_xgb = use_xgb
         self.num_trees = 100
         self.depth = 4
+        self.pos_weight = pos_weight
         
         # nodeid mapping
         self.n2id = dict()
@@ -54,13 +44,15 @@ class GraphData(object):
             self.train_xgb_model()
         else:
             self.prepare_df()
+        self.prepare_DATE_input()
         
     def train_xgb_model(self):
         ''' 
         Train XGB model to obtain leaf indices
         '''
         print("Training XGBoost model...")
-        self.xgb = XGBClassifier(n_estimators=self.num_trees, max_depth=self.depth, n_jobs=-1, eval_metric="error", scale_pos_weight = 200)
+        self.xgb = XGBClassifier(n_estimators=self.num_trees, max_depth=self.depth, n_jobs=-1, eval_metric="error", scale_pos_weight = self.pos_weight)
+#         self.xgb = GradientBoostingClassifier(n_estimators=self.num_trees, max_depth=self.depth)
         self.xgb.fit(self.data.dftrainx_lab, self.data.train_cls_label)   
     
         # Get leaf index from xgboost model 
@@ -92,27 +84,68 @@ class GraphData(object):
         self.trainunlab_leaves = self.scaler.transform(self.data.dftrainx_unlab)
         self.valid_leaves = self.scaler.transform(self.data.dfvalidx_lab)
         self.test_leaves = self.scaler.transform(self.data.dftestx)
+
+    def prepare_DATE_input(self):
+        """ Prepare input for Dual-Attentive Tree-Aware Embedding model, DATE """
+                
+        # user & item information 
+        train_raw_importers = self.data.train_lab['importer.id'].values
+        train_raw_items = self.data.train_lab['tariff.code'].values
+        valid_raw_importers = self.data.valid_lab['importer.id'].values
+        valid_raw_items = self.data.valid_lab['tariff.code'].values
+        test_raw_importers = self.data.test['importer.id']
+        test_raw_items = self.data.test['tariff.code']
+
+        # we need padding for unseen user or item 
+        importer_set = set(train_raw_importers) 
+        item_set = set(train_raw_items) 
+
+        # Remember to +1 for zero padding 
+        importer_mapping = {v:i+1 for i,v in enumerate(importer_set)} 
+        hs6_mapping = {v:i+1 for i,v in enumerate(item_set)}
+        self.importer_size = len(importer_mapping) + 1
+        self.item_size = len(hs6_mapping) + 1
+        train_importers = [importer_mapping[x] for x in train_raw_importers]
+        train_items = [hs6_mapping[x] for x in train_raw_items]
+
+        # for test data, we use padding_idx=0 for unseen data
+        valid_importers = [importer_mapping.get(x,0) for x in valid_raw_importers]
+        valid_items = [hs6_mapping.get(x,0) for x in valid_raw_items]
+        test_importers = [importer_mapping.get(x,0) for x in test_raw_importers] # use dic.get(key,deafault) to handle unseen
+        test_items = [hs6_mapping.get(x,0) for x in test_raw_items]
+
+        # Convert to torch type
+        self.train_user = torch.tensor(train_importers).long()
+        self.train_item = torch.tensor(train_items).long()
+        self.valid_user = torch.tensor(valid_importers).long()
+        self.valid_item = torch.tensor(valid_items).long()
+        self.test_user = torch.tensor(test_importers).long()
+        self.test_item = torch.tensor(test_items).long()
         
         
     def _getDF(self,stage):
         if stage == "train_lab":
             raw_df = self.data.train_lab
             feature = torch.LongTensor(self.train_leaves) if self.use_xgb else torch.FloatTensor(self.train_leaves)
+            sideFeature = [self.train_user, self.train_item]
             
         elif stage =="train_unlab":
             raw_df = self.data.train_unlab
             feature = torch.LongTensor(self.trainunlab_leaves) if self.use_xgb else torch.FloatTensor(self.trainunlab_leaves)
+            sideFeature = [torch.zeros(feature.shape[0]).long(), torch.zeros(feature.shape[0]).long()]
             
         elif stage == "valid":
             raw_df = self.data.valid_lab
             feature = torch.LongTensor(self.valid_leaves) if self.use_xgb else torch.FloatTensor(self.valid_leaves)
+            sideFeature = [self.valid_user, self.valid_item]
             
         elif stage == "test":
             raw_df = self.data.test
             feature = torch.LongTensor(self.test_leaves) if self.use_xgb else torch.FloatTensor(self.test_leaves)
+            sideFeature = [self.test_user, self.test_item]
         else:
             raise KeyError("No such stage for building dataframe")
-        return raw_df, feature
+        return raw_df, feature, sideFeature
     
     def _getNid(self,x):
         '''
@@ -161,7 +194,9 @@ class GraphData(object):
         edges = []
         edge_att = []
         edge_label = []
-        df, node_feature = self._getDF(stage)
+        df, node_feature,  sideFeature = self._getDF(stage)
+        importers = sideFeature[0]
+        items = sideFeature[1]
         transaction_nodes = [self._getNid(i) for i in df.index]
         self.G.add_nodes_from(transaction_nodes, att = stage)
         target = torch.FloatTensor(df["illicit"].values)
@@ -190,6 +225,8 @@ class GraphData(object):
         init_feature = torch.zeros(new_nodeNum,self.num_trees) if self.use_xgb else torch.zeros(new_nodeNum,self.leaf_dim)
         init_feature = init_feature.long() if self.use_xgb else init_feature
         node_feature = torch.cat((node_feature,init_feature), dim=0)
+        importers = torch.cat((importers,torch.zeros(new_nodeNum).long()))
+        items = torch.cat((items,torch.zeros(new_nodeNum).long()))
         target = torch.cat((target, -torch.ones(new_nodeNum)))
         rev_target = torch.cat((rev_target, -torch.ones(new_nodeNum)))
                 
@@ -201,8 +238,11 @@ class GraphData(object):
         pyg_data.edge_index = torch.cat((pyg_data.edge_index, torch.flip(pyg_data.edge_index,[0])), dim=-1)
         pyg_data.edge_attr = torch.LongTensor(edge_att)
         pyg_data.edge_label = torch.FloatTensor(edge_label + edge_label)
+        pyg_data.importer = importers
+        pyg_data.item = items
         
         return pyg_data
+
 
 
 def StackData(train_data, unlab_data, valid_data, test_data):
@@ -211,29 +251,30 @@ def StackData(train_data, unlab_data, valid_data, test_data):
     because the valid/test data should include train/unlab edges
     '''
     stack = Data()
-    x, y, edge_index, edge_label, rev = [],[],[],[],[]
+    all_data = (train_data, unlab_data, valid_data, test_data)
     
     # feature
-    x.append(train_data.x)
-    x.append(unlab_data.x)
-    x.append(valid_data.x)
-    x.append(test_data.x)
+    x = [data.x for data in all_data]
     x = torch.cat(x,dim=0)
     stack.x = x
+
+    # importer
+    importer = [data.importer for data in all_data]
+    importer = torch.cat(importer,dim=-1)
+    stack.importer = importer
+
+    # item 
+    item = [data.item for data in all_data]
+    item = torch.cat(item,dim=-1)
+    stack.item = item
     
     # target
-    y.append(train_data.y)
-    y.append(unlab_data.y)
-    y.append(valid_data.y)
-    y.append(test_data.y)
+    y = [data.y for data in all_data]
     y = torch.cat(y,dim=-1)
     stack.y = y
     
     # revenue
-    rev.append(train_data.rev)
-    rev.append(unlab_data.rev)
-    rev.append(valid_data.rev)
-    rev.append(test_data.rev)
+    rev = [data.rev for data in all_data]
     rev = torch.cat(rev,dim=-1)
     stack.rev = rev
     
@@ -258,6 +299,8 @@ class Batch(NamedTuple):
     y: Tensor
     rev: Tensor
     adjs_t: NamedTuple
+    importer: Tensor
+    item : Tensor
 
     def to(self, *args, **kwargs):
         return Batch(
@@ -265,6 +308,8 @@ class Batch(NamedTuple):
             y=self.y.to(*args, **kwargs),
             rev=self.rev.to(*args, **kwargs),
             adjs_t=[(adj_t.to(*args, **kwargs), eid.to(*args, **kwargs), size) for adj_t, eid, size in self.adjs_t],
+            importer = self.importer.to(*args, **kwargs),
+            item = self.item.to(*args, **kwargs),
         )
 
 
@@ -309,4 +354,6 @@ class CustomData(LightningDataModule):
             y=self.data.y[n_id[:batch_size]],
             rev = self.data.rev[n_id[:batch_size]],
             adjs_t=adjs,
+            importer = self.data.importer[n_id[:batch_size]],
+            item = self.data.item[n_id[:batch_size]],
         )
