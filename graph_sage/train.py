@@ -238,7 +238,7 @@ class PretrainGNN(LightningModule):
     
     def configure_optimizers(self):
         optimizer = RangerLars(self.parameters(), lr=0.005, weight_decay=0.0001)
-        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=0.8)
+        scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=0.9)
         return [optimizer], [scheduler]
 
 # pretraining model config
@@ -248,17 +248,12 @@ sizes = [50,20]
 numLayers = len(sizes)
 
 model = PretrainGNN(input_dim, hidden_size, numLayers, useXGB=gdata.use_xgb)
-pretrain_modelpath = "./saved_model/pretrained-%s.ckpt" % log_name
-if os.path.exists(pretrain_modelpath):
-    model = model.load_from_checkpoint(checkpoint_path=pretrain_modelpath)
-else:
-    # lightning config
-    stacked_data = StackData(trainLab_data,unlab_data,valid_data, test_data)
-    datamodule = UnsupData(stacked_data, sizes = sizes, batch_size=batch_size)
-    trainer = Trainer(gpus=[gpu_id], max_epochs=2)
-    trainer.fit(model, train_dataloader=datamodule.train_dataloader())
-    trainer.save_checkpoint(pretrain_modelpath)
 
+# lightning config
+stacked_data = StackData(trainLab_data,unlab_data,valid_data, test_data)
+datamodule = UnsupData(stacked_data, sizes = sizes, batch_size=batch_size)
+trainer = Trainer(gpus=[gpu_id], max_epochs=4)
+trainer.fit(model, train_dataloader=datamodule.train_dataloader())
 
 # model
 class Predictor(LightningModule):

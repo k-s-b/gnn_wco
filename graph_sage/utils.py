@@ -123,7 +123,7 @@ def metrics(y_prob,xgb_testy,revenue_test, args, best_thresh=None):
         re.append(recall)
         f.append(f1)
         rev.append(revenue)
-    return overall_f1,auc,pr, re, f, rev
+    return overall_f1,auc,f,pr, re, rev
 
 
 def metrics_active(active_rev,active_cls,xgb_testy,revenue_test):
