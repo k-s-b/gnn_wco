@@ -332,6 +332,7 @@ class Ndata(Import_declarations):
     """ Class for Ndata"""
     def __init__(self, path):
         super(Ndata, self).__init__(path)
+#         self.profile_candidates = ['importer.id', 'tariff.code', 'quantity', 'HS6', 'HS4', 'HS2', 'office.id']
         self.profile_candidates = ['importer.id', 'declarant.id', 'tariff.code', 'quantity', 'HS6', 'HS4', 'HS2', 'office.id']
 
         
@@ -346,14 +347,17 @@ class Tdata(Import_declarations):
     """ Class for Tdata"""
     def __init__(self, path):
         super(Tdata, self).__init__(path)
+#         self.profile_candidates = ['importer.id', 'tariff.code', 'quantity', 'HS6', 'HS4', 'HS2', 'office.id']
         self.profile_candidates = ['importer.id', 'country', 'last.departure.code', 'contract.party.code',
                       'tariff.code', 'quantity', 'HS6', 'HS4', 'HS2', 'office.id']
 
 
 class Cdata(Import_declarations):
-    """ Class for Cdata - waiting"""
+    """ Class for Cdata"""
     def __init__(self, path):
         super(Cdata, self).__init__(path)
+        self.profile_candidates = ['importer.id', 'declarant.id', 'country', 'tariff.code', 'HS6', 'HS4', 'HS2', 'office.id']
+        
 
 
 class Kdata(Import_declarations):
