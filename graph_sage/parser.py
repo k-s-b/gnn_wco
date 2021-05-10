@@ -8,6 +8,7 @@ def get_parser():
     
     # Hyperparameters related to DATE
     parser.add_argument('--epoch', type=int, default=20, help="Number of epochs for DATE-related models")
+    parser.add_argument('--pretrainstep', type=int, default=4, help="Number of epochs for pretraining")
     parser.add_argument('--batch_size', type=int, default=512, help="Batch size for DATE-related models")
     parser.add_argument('--dim', type=int, default=32, help="Hidden layer dimension")
     parser.add_argument('--lr', type=float, default=0.04, help="learning rate")

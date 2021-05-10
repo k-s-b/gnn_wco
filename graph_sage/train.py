@@ -40,11 +40,11 @@ args = parser.parse_args()
 chosen_data = args.data
 log_name = "%sData" % chosen_data[-1]
 if chosen_data == 'real-n':
-    data = dataset.Ndata(path='../Custom-Semi-Supervised/data/ndata.csv')
+    data = dataset.Ndata(path='~/Custom-Semi-Supervised/data/ndata.csv')
 elif chosen_data == 'real-m':
-    data = dataset.Mdata(path='../Custom-Semi-Supervised/data/mdata.csv')
+    data = dataset.Mdata(path='~/Custom-Semi-Supervised/data/mdata.csv')
 elif chosen_data == 'real-t':
-    data = dataset.Tdata(path='../Custom-Semi-Supervised/data/tdata.csv')
+    data = dataset.Tdata(path='~/Custom-Semi-Supervised/data/tdata.csv')
 
 # args
 seed = args.seed
@@ -252,7 +252,7 @@ model = PretrainGNN(input_dim, hidden_size, numLayers, useXGB=gdata.use_xgb)
 # lightning config
 stacked_data = StackData(trainLab_data,unlab_data,valid_data, test_data)
 datamodule = UnsupData(stacked_data, sizes = sizes, batch_size=batch_size)
-trainer = Trainer(gpus=[gpu_id], max_epochs=4)
+trainer = Trainer(gpus=[gpu_id], max_epochs=args.pretrainstep)
 trainer.fit(model, train_dataloader=datamodule.train_dataloader())
 
 # model
