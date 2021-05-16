@@ -179,7 +179,7 @@ class Import_declarations():
         
         # Intentionally masking datasets to simulate partially labeled scenario, note that our dataset is 100% inspected.
         # If your dataset is partially labeled already, comment below two lines.
-        if args.data in ['synthetic', 'real-n', 'real-m', 'real-t']:
+        if args.data in ['synthetic', 'real-n', 'real-m', 'real-t','real-c']:
             self.train = mask_labels(self.train, args.initial_inspection_rate)
 #            self.valid = mask_labels(self.valid, args.initial_inspection_rate)
         
