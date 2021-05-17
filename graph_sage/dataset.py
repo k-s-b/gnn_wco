@@ -164,7 +164,10 @@ class Import_declarations():
 
     def split(self, train_start_day, valid_start_day, test_start_day, test_end_day, valid_length, test_length, args):
         """ Split data into train / valid / test """
-            
+        
+        self.df = self.df.drop(self.df[self.df['gross.weight'] == 0].index)
+        self.df = self.df.drop(self.df[self.df['quantity'] == 0].index)
+        
         self.train_start_day = train_start_day.strftime('%y-%m-%d')
         self.valid_start_day = valid_start_day.strftime('%y-%m-%d')
         self.test_start_day = test_start_day.strftime('%y-%m-%d')
