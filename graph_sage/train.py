@@ -40,11 +40,13 @@ args = parser.parse_args()
 chosen_data = args.data
 log_name = "%sData" % chosen_data[-1]
 if chosen_data == 'real-n':
-    data = dataset.Ndata(path='~/Custom-Semi-Supervised/data/ndata.csv')
+    data = dataset.Ndata(path='/data1/roytsai/Custom-Semi-Supervised/data/ndata.csv')
 elif chosen_data == 'real-m':
-    data = dataset.Mdata(path='~/Custom-Semi-Supervised/data/mdata.csv')
+    data = dataset.Mdata(path='/data1/roytsai/Custom-Semi-Supervised/data/mdata.csv')
 elif chosen_data == 'real-t':
-    data = dataset.Tdata(path='~/Custom-Semi-Supervised/data/tdata.csv')
+    data = dataset.Tdata(path='/data1/roytsai/Custom-Semi-Supervised/data/tdata.csv')
+elif chosen_data == 'real-c':
+    data = dataset.Cdata(path='/data1/roytsai/Custom-Semi-Supervised/data/cdata.csv')
 
 # args
 seed = args.seed
@@ -325,6 +327,7 @@ class Predictor(LightningModule):
     
     def test_epoch_end(self,val_step_outputs):
         predictions = torch.cat(val_step_outputs).detach().cpu().numpy().ravel()
+        self.save_prediction(predictions)
         overall_f1, auc,f,pr, re, rev = metrics(predictions, self.data.test_cls_label, self.data.test_reg_label,None)
         f1_top = np.mean(f)
         performance = [*f, *pr, *re, *rev]
@@ -341,6 +344,13 @@ class Predictor(LightningModule):
         optimizer = RangerLars(self.parameters(), lr=lr, weight_decay=weight_decay)
         scheduler = torch.optim.lr_scheduler.ExponentialLR(optimizer,gamma=0.99)
         return [optimizer], [scheduler]
+    
+    def save_prediction(self,predictions):
+        ''' saving prediction for analysis'''
+        os.makedirs("predictions", exist_ok=True)
+        pred_ser = pd.Series(predictions)
+        pred_fname = "predictions/GNN_%s_%s_prediction.csv" % (chosen_data,initial_inspection_rate)
+        pred_ser.to_csv(pred_fname,index=0)
 
 
 # model config
@@ -360,7 +370,7 @@ logger = TensorBoardLogger("ssl_exp",name=log_name)
 logger.log_hyperparams(model.hparams, metrics={"F1-top":0})
 checkpoint_callback = ModelCheckpoint(
     monitor='F1-top',    
-    dirpath='./saved_model',
+    dirpath='/data1/roytsai/saved_model',
     filename='Analysis-%s-{F1-top:.4f}' % log_name,
     save_top_k=1,
     mode='max',
@@ -380,9 +390,15 @@ df_summary = df_summary[[i for i in df_summary.columns if "Test" in i]]
 # open file
 os.makedirs("results", exist_ok=True)
 fpath = "./results/GNN-result-%s-%s.csv" % (log_name,initial_inspection_rate)
-if not os.path.isfile(fpath):
-    df_summary.to_csv(fpath,index=False)
-else:
+try:
     exp_df = pd.read_csv(fpath)
     exp_df = pd.concat((exp_df,df_summary),axis=0)
     exp_df.to_csv(fpath,index=False)
+except: 
+    df_summary.to_csv(fpath,index=False)
+# if not os.path.isfile(fpath):
+    
+# else:
+#     exp_df = pd.read_csv(fpath)
+#     exp_df = pd.concat((exp_df,df_summary),axis=0)
+#     exp_df.to_csv(fpath,index=False)
