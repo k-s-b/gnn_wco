@@ -24,7 +24,7 @@ from ranger import Ranger
 from utils import torch_threshold, metrics, metrics_active
 from pytorch_lightning import seed_everything
 from query_strategies import random, xgb, xgb_lr, badge, DATE, diversity, bATE, upDATE, gATE, ssl_ae, tabnet, uncertainty, deepSAD, multideepSAD, VIME, adahybrid, hybrid 
-# warnings.filterwarnings("ignore")
+warnings.filterwarnings("ignore")
 
 
 # Selection stragies
