@@ -36,6 +36,7 @@ parser = get_parser()
 args = parser.parse_args()
 print(args)
 
+
 chosen_data = args.data
 log_name = "%sData" % chosen_data[-1]
 if chosen_data == 'real-n':
