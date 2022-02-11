@@ -1,3 +1,3 @@
-# Exploring Graph Neural Networks for Customs Fraud Detection
+# GraphFC: Customs Fraud Detection with Label Scarcity
 
 
