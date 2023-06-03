@@ -1,0 +1,114 @@
+N data
+Experiment starts:  1685482622.358
+Data size:
+Train labeled: (54134, 52), Train unlabeled: (1028538, 52), Valid labeled: (70917, 52), Valid unlabeled: (0, 26), Test: (274808, 52)
+Checking label distribution
+Training: 0.05022795615481618
+Validation: 0.035556788645191434
+Testing: 0.025360899366070794
+Test episode: #0, Current inspection rate: 5.0
+Training XGBoost model...
+Checking top 1% suspicious transactions: 2749
+Precision: 0.1550, Recall: 0.0627, Revenue: 0.1090
+Checking top 2% suspicious transactions: 5497
+Precision: 0.0906, Recall: 0.0733, Revenue: 0.1344
+Checking top 5% suspicious transactions: 13741
+Precision: 0.0463, Recall: 0.0936, Revenue: 0.1792
+Checking top 10% suspicious transactions: 27480
+Precision: 0.0462, Recall: 0.1867, Revenue: 0.2948
+Mode: scratch, Episode: 0
+Ranger optimizer loaded. 
+Gradient Centralization usage = True
+GC applied to both conv and fc layers
+
+
+--------Evaluating DATE model---------
+CLS loss: 0.3984, REG loss: 0.0134
+CLS loss: 0.2981, REG loss: 0.0104
+Checking top 1% suspicious transactions: 2749
+Precision: 0.1528, Recall: 0.0618, Revenue: 0.1045
+Checking top 2% suspicious transactions: 5497
+Precision: 0.0904, Recall: 0.0731, Revenue: 0.1281
+Checking top 5% suspicious transactions: 13741
+Precision: 0.0544, Recall: 0.1100, Revenue: 0.1803
+Checking top 10% suspicious transactions: 27481
+Precision: 0.0460, Recall: 0.1861, Revenue: 0.2971
+CLS loss: 0.2981, REG loss: 0.0104
+
+--------Evaluating the model---------
+Precision: 0.0544, Recall: 0.1100, Revenue: 0.1803
+
+-------------------------------------------------------------------
+T data
+Experiment starts:  1685483977.82
+Data size:
+Train labeled: (77391, 41), Train unlabeled: (1470430, 41), Valid labeled: (134457, 41), Valid unlabeled: (0, 13), Test: (703089, 41)
+Checking label distribution
+Training: 0.09765126372223641
+Validation: 0.09589052260946108
+Testing: 0.10476497254150201
+Test episode: #0, Current inspection rate: 10.0
+Training XGBoost model...
+Checking top 1% suspicious transactions: 7031
+Precision: 0.7468, Recall: 0.0788, Revenue: 0.1311
+Checking top 2% suspicious transactions: 14062
+Precision: 0.6212, Recall: 0.1310, Revenue: 0.2058
+Checking top 5% suspicious transactions: 35155
+Precision: 0.4475, Recall: 0.2359, Revenue: 0.3472
+Checking top 10% suspicious transactions: 70309
+Precision: 0.3290, Recall: 0.3470, Revenue: 0.4678
+Mode: scratch, Episode: 0
+Ranger optimizer loaded. 
+Gradient Centralization usage = True
+GC applied to both conv and fc layers
+
+--------Evaluating DATE model---------
+CLS loss: 0.3162, REG loss: 0.0282
+CLS loss: 0.3165, REG loss: 0.0286
+Checking top 1% suspicious transactions: 7031
+Precision: 0.8430, Recall: 0.0889, Revenue: 0.1692
+Checking top 2% suspicious transactions: 14062
+Precision: 0.7170, Recall: 0.1512, Revenue: 0.2600
+Checking top 5% suspicious transactions: 35155
+Precision: 0.5120, Recall: 0.2700, Revenue: 0.4113
+Checking top 10% suspicious transactions: 70309
+Precision: 0.3641, Recall: 0.3840, Revenue: 0.5367
+CLS loss: 0.3165, REG loss: 0.0286
+
+-------------------------------------------------------------------
+C data
+Experiment starts:  1685485425.555
+Data size:
+Train labeled: (1185963, 40), Train unlabeled: (1187, 40), Valid labeled: (143717, 40), Valid unlabeled: (0, 14), Test: (564355, 40)
+Checking label distribution
+Training: 0.012101216692851833
+Validation: 0.010355445572396727
+Testing: 0.012851897184822521
+Test episode: #0, Current inspection rate: 10.0
+Training XGBoost model...
+Checking top 1% suspicious transactions: 5644
+Precision: 0.0806, Recall: 0.0635, Revenue: 0.1595
+Checking top 2% suspicious transactions: 11288
+Precision: 0.0676, Recall: 0.1065, Revenue: 0.2223
+Checking top 5% suspicious transactions: 28218
+Precision: 0.0517, Recall: 0.2036, Revenue: 0.3241
+Checking top 10% suspicious transactions: 56436
+Precision: 0.0415, Recall: 0.3270, Revenue: 0.5022
+Mode: scratch, Episode: 0
+Ranger optimizer loaded. 
+Gradient Centralization usage = True
+GC applied to both conv and fc layers
+
+
+--------Evaluating DATE model---------
+CLS loss: 0.0628, REG loss: 0.0048
+CLS loss: 0.0881, REG loss: 0.0059
+Checking top 1% suspicious transactions: 5644
+Precision: 0.0898, Recall: 0.0708, Revenue: 0.1358
+Checking top 2% suspicious transactions: 11288
+Precision: 0.0750, Recall: 0.1183, Revenue: 0.2142
+Checking top 5% suspicious transactions: 28218
+Precision: 0.0562, Recall: 0.2215, Revenue: 0.3564
+Checking top 10% suspicious transactions: 56436
+Precision: 0.0442, Recall: 0.3483, Revenue: 0.5141
+CLS loss: 0.0881, REG loss: 0.0059

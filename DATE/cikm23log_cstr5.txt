@@ -1,0 +1,37 @@
+Experiment starts:  1685567468.0
+stratified
+Data size:
+Train labeled: (58904, 40), Train unlabeled: (1128246, 40), Valid labeled: (143717, 40), Valid unlabeled: (0, 14), Test: (564355, 40)
+Checking label distribution
+Training: 0.011974504784647894
+Validation: 0.010355445572396727
+Testing: 0.012851897184822521
+Test episode: #0, Current inspection rate: 5.0
+Training XGBoost model...
+Checking top 1% suspicious transactions: 5644
+Precision: 0.0264, Recall: 0.0208, Revenue: 0.0207
+Checking top 2% suspicious transactions: 11288
+Precision: 0.0174, Recall: 0.0274, Revenue: 0.0261
+Checking top 5% suspicious transactions: 28218
+Precision: 0.0195, Recall: 0.0769, Revenue: 0.1189
+Checking top 10% suspicious transactions: 56435
+Precision: 0.0224, Recall: 0.1768, Revenue: 0.2281
+Mode: scratch, Episode: 0
+Ranger optimizer loaded. 
+Gradient Centralization usage = True
+GC applied to both conv and fc layers
+
+
+
+--------Evaluating DATE model---------
+CLS loss: 0.0548, REG loss: 0.0048
+CLS loss: 0.0654, REG loss: 0.0050
+Checking top 1% suspicious transactions: 5644
+Precision: 0.0404, Recall: 0.0318, Revenue: 0.0434
+Checking top 2% suspicious transactions: 11288
+Precision: 0.0362, Recall: 0.0571, Revenue: 0.0802
+Checking top 5% suspicious transactions: 28218
+Precision: 0.0351, Recall: 0.1382, Revenue: 0.2037
+Checking top 10% suspicious transactions: 56436
+Precision: 0.0314, Recall: 0.2472, Revenue: 0.3326
+CLS loss: 0.0654, REG loss: 0.0050

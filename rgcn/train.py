@@ -40,13 +40,13 @@ print(args)
 chosen_data = args.data
 log_name = "%sData" % chosen_data[-1]
 if chosen_data == 'real-n':
-    data = dataset.Ndata(path='/data1/roytsai/Custom-Semi-Supervised/data/ndata.csv')
+    data = dataset.Ndata(path='/home/singh/wco/data/ndata.csv')
 elif chosen_data == 'real-m':
-    data = dataset.Mdata(path='/data1/roytsai/Custom-Semi-Supervised/data/mdata.csv')
+    data = dataset.Mdata(path='/home/singh/wco/data/mdata.csv')
 elif chosen_data == 'real-t':
-    data = dataset.Tdata(path='/data1/roytsai/Custom-Semi-Supervised/data/tdata.csv')
+    data = dataset.Tdata(path='/home/singh/wco/data/tdata.csv')
 elif chosen_data == 'real-c':
-    data = dataset.Cdata(path='/data1/roytsai/Custom-Semi-Supervised/data/cdata.csv')
+    data = dataset.Cdata(path='/home/singh/wco/data/cdata.csv')
 
 # args
 seed = args.seed

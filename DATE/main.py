@@ -183,6 +183,7 @@ if __name__ == '__main__':
     parser.add_argument('--semi_supervised', type=int, default=0, help='Additionally using uninspected, unlabeled data (1=semi-supervised, 0=fully-supervised)')
     parser.add_argument('--identifier', type=str, default=curr_time, help='identifier for each execution')
     parser.add_argument('--save', type=int, default=0, help='Save intermediary files (1=save, 0=not save)')
+    parser.add_argument('--masking', type=str, default='stratified', help='Masking strategy')
     
     # Arguments
     seed_everything(1234)
@@ -226,15 +227,15 @@ if __name__ == '__main__':
     if chosen_data == 'synthetic':
         data = dataset.Syntheticdata(path='./data/synthetic-imports-declarations.csv')
     elif chosen_data == 'real-n':
-        data = dataset.Ndata(path='../Custom-Semi-Supervised/data/ndata.csv')
+        data = dataset.Ndata(path='/home/singh/wco/data/ndata.csv')
     elif chosen_data == 'real-m':
         data = dataset.Mdata(path='../Custom-Semi-Supervised/data/mdata.csv')
     elif chosen_data == 'real-t':
-        data = dataset.Tdata(path='../Custom-Semi-Supervised/data/tdata.csv')
+        data = dataset.Tdata(path='/home/singh/wco/data/tdata.csv')
     elif chosen_data == 'real-k':
         data = dataset.Kdata(path='../Custom-Semi-Supervised/data/kdata.csv')  
     elif chosen_data == 'real-c':
-        data = dataset.Cdata(path='../Custom-Semi-Supervised/data/cdata.csv')  
+        data = dataset.Cdata(path='/home/singh/wco/data/cdata.csv')  
     
         
     # Saving simulation results: Output file will be saved under ./results/performances/ directory

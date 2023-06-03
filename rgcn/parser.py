@@ -33,5 +33,6 @@ def get_parser():
     parser.add_argument('--semi_supervised', type=int, default=0, help='Additionally using uninspected, unlabeled data (1=semi-supervised, 0=fully-supervised)')
     parser.add_argument('--save', type=int, default=0, help='Save intermediary files (1=save, 0=not save)')
     parser.add_argument('--seed', type=int, default=1234, help='Random seed for spliting dataset')
+    parser.add_argument('--masking', type=str, default='stratified', help='Masking strategy')
     
     return parser

@@ -11,7 +11,7 @@ import warnings
 warnings.filterwarnings("ignore")
 
 
-def mask_labels(df: pd.DataFrame, ir_init: float) -> pd.DataFrame:
+def mask_labels(df: pd.DataFrame, ir_init: float, masking: str) -> pd.DataFrame:
     """
     Masking certain amount of importer_id, to mimic the situation that not all imports are inspected.
     ir_init is the inspection ratio at the beginning.
@@ -31,10 +31,29 @@ def mask_labels(df: pd.DataFrame, ir_init: float) -> pd.DataFrame:
 #     df['revenue'] = df['importer.id'].apply(lambda x: d[x]) * df['revenue']
 #     print('After masking:\n', df['illicit'].value_counts())
 
-    sampled_idx = list(df.sample(frac=1 - ir_init / 100, replace=False).index)
-    df.loc[sampled_idx,"illicit"] = df.loc[sampled_idx,"illicit"]* np.nan
-    df.loc[sampled_idx,"revenue"] = df.loc[sampled_idx,"revenue"]* np.nan
-    return df
+    if(masking == 'stratified'):
+        print(masking)
+        sampled_idx = df.groupby('importer.id').apply(lambda x: x.sample(frac=1 - (ir_init / 100),  replace=False)).droplevel(0).index
+        df.loc[sampled_idx,"illicit"] = df.loc[sampled_idx,"illicit"]* np.nan
+        df.loc[sampled_idx,"revenue"] = df.loc[sampled_idx,"revenue"]* np.nan
+        return df
+    
+    elif(masking == 'random'):
+        sampled_idx = list(df.sample(frac=1 - ir_init / 100, replace=False).index)
+        df.loc[sampled_idx,"illicit"] = df.loc[sampled_idx,"illicit"]* np.nan
+        df.loc[sampled_idx,"revenue"] = df.loc[sampled_idx,"revenue"]* np.nan
+        return df
+    
+    elif(masking == 'fraud'):
+        sampled_idx = list(df.sample(frac=1 - ir_init / 100, replace=False, weights=df['']).index)
+        df.loc[sampled_idx,"illicit"] = df.loc[sampled_idx,"illicit"]* np.nan
+        df.loc[sampled_idx,"revenue"] = df.loc[sampled_idx,"revenue"]* np.nan
+        return df
+    
+#     sampled_idx = list(df.sample(frac=1 - ir_init / 100, replace=False).index)
+#     df.loc[sampled_idx,"illicit"] = df.loc[sampled_idx,"illicit"]* np.nan
+#     df.loc[sampled_idx,"revenue"] = df.loc[sampled_idx,"revenue"]* np.nan
+#     return df
 
 
 def merge_attributes(df: pd.DataFrame, *args: str) -> None:
@@ -183,7 +202,7 @@ class Import_declarations():
         # Intentionally masking datasets to simulate partially labeled scenario, note that our dataset is 100% inspected.
         # If your dataset is partially labeled already, comment below two lines.
         if args.data in ['synthetic', 'real-n', 'real-m', 'real-t','real-c']:
-            self.train = mask_labels(self.train, args.initial_inspection_rate)
+            self.train = mask_labels(self.train, args.initial_inspection_rate, args.masking)
 #            self.valid = mask_labels(self.valid, args.initial_inspection_rate)
         
         

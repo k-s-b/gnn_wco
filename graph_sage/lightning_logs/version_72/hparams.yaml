@@ -1,0 +1,4 @@
+hidden_dim: 32
+input_dim: 1206
+numLayers: 4
+useXGB: true

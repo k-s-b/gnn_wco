@@ -1,1 +1,1 @@
-python3 train.py --device 0 --epoch 20 --data real-m --sampling xgb --train_from 20130101 --test_from 20160101 --test_length 365 --valid_length 90 --initial_inspection_rate 99.9 --lr 0.004 --pos_weight 2
+python3 train.py --device 2 --epoch 50 --data real-m --sampling xgb --train_from 20130101 --test_from 20160101 --test_length 365 --valid_length 90 --initial_inspection_rate 5 --lr 0.004 --pos_weight 1

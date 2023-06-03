@@ -1,0 +1,324 @@
+Experiment starts:  1685485650.666
+stratified
+Data size:
+Train labeled: (44339, 52), Train unlabeled: (1038333, 52), Valid labeled: (70917, 52), Valid unlabeled: (0, 26), Test: (274808, 52)
+Checking label distribution
+Training: 0.05116047509542211
+Validation: 0.035556788645191434
+Testing: 0.025360899366070794
+Test episode: #0, Current inspection rate: 5.0
+Training XGBoost model...
+Checking top 1% suspicious transactions: 2749
+Precision: 0.1906, Recall: 0.0771, Revenue: 0.0994
+Checking top 2% suspicious transactions: 5497
+Precision: 0.1093, Recall: 0.0884, Revenue: 0.1271
+Checking top 5% suspicious transactions: 13741
+Precision: 0.0546, Recall: 0.1103, Revenue: 0.1789
+Checking top 10% suspicious transactions: 27481
+Precision: 0.0588, Recall: 0.2379, Revenue: 0.3214
+Mode: scratch, Episode: 0
+Ranger optimizer loaded. 
+Gradient Centralization usage = True
+GC applied to both conv and fc layers
+
+
+--------Evaluating DATE model---------
+CLS loss: 0.3305, REG loss: 0.0269
+CLS loss: 0.3215, REG loss: 0.0264
+Checking top 1% suspicious transactions: 7031
+Precision: 0.8271, Recall: 0.0872, Revenue: 0.1629
+Checking top 2% suspicious transactions: 14062
+Precision: 0.7099, Recall: 0.1497, Revenue: 0.2600
+Checking top 5% suspicious transactions: 35155
+Precision: 0.5105, Recall: 0.2691, Revenue: 0.4186
+Checking top 10% suspicious transactions: 70309
+Precision: 0.3641, Recall: 0.3839, Revenue: 0.5400
+CLS loss: 0.3215, REG loss: 0.0264
+Experiment starts:  1685588917.007
+stratified
+Data size:
+Train labeled: (44339, 52), Train unlabeled: (1038333, 52), Valid labeled: (70917, 52), Valid unlabeled: (0, 26), Test: (274808, 52)
+Checking label distribution
+Training: 0.05116047509542211
+Validation: 0.035556788645191434
+Testing: 0.025360899366070794
+Test episode: #0, Current inspection rate: 5.0
+Training XGBoost model...
+Checking top 1% suspicious transactions: 2749
+Precision: 0.1906, Recall: 0.0771, Revenue: 0.0994
+Checking top 2% suspicious transactions: 5497
+Precision: 0.1093, Recall: 0.0884, Revenue: 0.1271
+Checking top 5% suspicious transactions: 13741
+Precision: 0.0546, Recall: 0.1103, Revenue: 0.1789
+Checking top 10% suspicious transactions: 27481
+Precision: 0.0588, Recall: 0.2379, Revenue: 0.3214
+Mode: scratch, Episode: 0
+Ranger optimizer loaded. 
+Gradient Centralization usage = True
+GC applied to both conv and fc layers
+
+Training DATE model ...
+------------
+Validate at epoch 1
+CLS loss: 0.3909, REG loss: 0.0117
+Checking top 1% suspicious transactions: 710
+Precision: 0.0352, Recall: 0.0103, Revenue: 0.0106
+Checking top 2% suspicious transactions: 1419
+Precision: 0.0458, Recall: 0.0267, Revenue: 0.0811
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0632, Recall: 0.0920, Revenue: 0.1697
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0588, Recall: 0.1713, Revenue: 0.3604
+Overall F1:0.0775, AUC:0.6272, F1-top:0.1031
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 2
+CLS loss: 0.1450, REG loss: 0.0127
+Checking top 1% suspicious transactions: 710
+Precision: 0.0817, Recall: 0.0238, Revenue: 0.1281
+Checking top 2% suspicious transactions: 1419
+Precision: 0.0965, Recall: 0.0563, Revenue: 0.1687
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1004, Recall: 0.1462, Revenue: 0.2556
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0811, Recall: 0.2361, Revenue: 0.3591
+Overall F1:0.0000, AUC:0.6595, F1-top:0.1589
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 3
+CLS loss: 0.1730, REG loss: 0.0116
+Checking top 1% suspicious transactions: 710
+Precision: 0.3070, Recall: 0.0895, Revenue: 0.1879
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1938, Recall: 0.1129, Revenue: 0.1985
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0928, Recall: 0.1351, Revenue: 0.2427
+Checking top 10% suspicious transactions: 7087
+Precision: 0.0555, Recall: 0.1614, Revenue: 0.3093
+Overall F1:0.1458, AUC:0.6681, F1-top:0.1984
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 4
+CLS loss: 0.2570, REG loss: 0.0115
+Checking top 1% suspicious transactions: 710
+Precision: 0.3465, Recall: 0.1010, Revenue: 0.1877
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1980, Recall: 0.1154, Revenue: 0.1945
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0959, Recall: 0.1396, Revenue: 0.2214
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0563, Recall: 0.1639, Revenue: 0.2740
+Overall F1:0.1582, AUC:0.6670, F1-top:0.1968
+------------
+Validate at epoch 5
+CLS loss: 0.2837, REG loss: 0.0119
+Checking top 1% suspicious transactions: 710
+Precision: 0.3535, Recall: 0.1031, Revenue: 0.1874
+Checking top 2% suspicious transactions: 1419
+Precision: 0.2030, Recall: 0.1183, Revenue: 0.1952
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0995, Recall: 0.1450, Revenue: 0.2210
+Checking top 10% suspicious transactions: 7090
+Precision: 0.0568, Recall: 0.1655, Revenue: 0.2758
+Overall F1:0.1609, AUC:0.7226, F1-top:0.1990
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 6
+CLS loss: 0.2966, REG loss: 0.0116
+Checking top 1% suspicious transactions: 710
+Precision: 0.3535, Recall: 0.1031, Revenue: 0.1823
+Checking top 2% suspicious transactions: 1419
+Precision: 0.2030, Recall: 0.1183, Revenue: 0.1951
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0984, Recall: 0.1433, Revenue: 0.2182
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0571, Recall: 0.1663, Revenue: 0.2778
+Overall F1:0.1603, AUC:0.6939, F1-top:0.1982
+------------
+Validate at epoch 7
+CLS loss: 0.2932, REG loss: 0.0114
+Checking top 1% suspicious transactions: 710
+Precision: 0.3479, Recall: 0.1014, Revenue: 0.1822
+Checking top 2% suspicious transactions: 1419
+Precision: 0.2030, Recall: 0.1183, Revenue: 0.1933
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0995, Recall: 0.1450, Revenue: 0.2196
+Checking top 10% suspicious transactions: 7080
+Precision: 0.0597, Recall: 0.1737, Revenue: 0.2826
+Overall F1:0.1593, AUC:0.6751, F1-top:0.1985
+------------
+Validate at epoch 8
+CLS loss: 0.3210, REG loss: 0.0118
+Checking top 1% suspicious transactions: 710
+Precision: 0.3563, Recall: 0.1039, Revenue: 0.1858
+Checking top 2% suspicious transactions: 1419
+Precision: 0.2023, Recall: 0.1179, Revenue: 0.1962
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1012, Recall: 0.1474, Revenue: 0.2479
+Checking top 10% suspicious transactions: 7080
+Precision: 0.0616, Recall: 0.1791, Revenue: 0.2859
+Overall F1:0.1614, AUC:0.6724, F1-top:0.2047
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 9
+CLS loss: 0.3364, REG loss: 0.0124
+Checking top 1% suspicious transactions: 710
+Precision: 0.3549, Recall: 0.1035, Revenue: 0.1845
+Checking top 2% suspicious transactions: 1418
+Precision: 0.2017, Recall: 0.1175, Revenue: 0.1930
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0995, Recall: 0.1450, Revenue: 0.2128
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0595, Recall: 0.1733, Revenue: 0.2829
+Overall F1:0.1611, AUC:0.6779, F1-top:0.1986
+------------
+Validate at epoch 10
+CLS loss: 0.3449, REG loss: 0.0116
+Checking top 1% suspicious transactions: 710
+Precision: 0.3507, Recall: 0.1023, Revenue: 0.1818
+Checking top 2% suspicious transactions: 1419
+Precision: 0.2001, Recall: 0.1166, Revenue: 0.1920
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1024, Recall: 0.1491, Revenue: 0.2544
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0723, Recall: 0.2107, Revenue: 0.3037
+Overall F1:0.1620, AUC:0.6750, F1-top:0.2072
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 11
+CLS loss: 0.3605, REG loss: 0.0117
+Checking top 1% suspicious transactions: 710
+Precision: 0.3549, Recall: 0.1035, Revenue: 0.1826
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1952, Recall: 0.1138, Revenue: 0.1928
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1007, Recall: 0.1466, Revenue: 0.2560
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0671, Recall: 0.1955, Revenue: 0.2916
+Overall F1:0.1606, AUC:0.6629, F1-top:0.2051
+------------
+Validate at epoch 12
+CLS loss: 0.3731, REG loss: 0.0115
+Checking top 1% suspicious transactions: 710
+Precision: 0.3479, Recall: 0.1014, Revenue: 0.1828
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1980, Recall: 0.1154, Revenue: 0.1933
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1007, Recall: 0.1466, Revenue: 0.2464
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0674, Recall: 0.1963, Revenue: 0.2896
+Overall F1:0.1571, AUC:0.6586, F1-top:0.2033
+------------
+Validate at epoch 13
+CLS loss: 0.3915, REG loss: 0.0115
+Checking top 1% suspicious transactions: 710
+Precision: 0.3479, Recall: 0.1014, Revenue: 0.1818
+Checking top 2% suspicious transactions: 1419
+Precision: 0.2008, Recall: 0.1170, Revenue: 0.1944
+Checking top 5% suspicious transactions: 3540
+Precision: 0.1006, Recall: 0.1462, Revenue: 0.2460
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0653, Recall: 0.1901, Revenue: 0.2885
+Overall F1:0.1583, AUC:0.6530, F1-top:0.2032
+------------
+Validate at epoch 14
+CLS loss: 0.4068, REG loss: 0.0116
+Checking top 1% suspicious transactions: 710
+Precision: 0.3535, Recall: 0.1031, Revenue: 0.1844
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1966, Recall: 0.1146, Revenue: 0.1933
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1035, Recall: 0.1507, Revenue: 0.2643
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0722, Recall: 0.2103, Revenue: 0.3034
+Overall F1:0.1591, AUC:0.6625, F1-top:0.2089
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 15
+CLS loss: 0.4109, REG loss: 0.0115
+Checking top 1% suspicious transactions: 710
+Precision: 0.3408, Recall: 0.0994, Revenue: 0.1817
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1952, Recall: 0.1138, Revenue: 0.1901
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1007, Recall: 0.1466, Revenue: 0.2555
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0657, Recall: 0.1914, Revenue: 0.2887
+Overall F1:0.1589, AUC:0.6542, F1-top:0.2023
+------------
+Validate at epoch 16
+CLS loss: 0.4051, REG loss: 0.0121
+Checking top 1% suspicious transactions: 710
+Precision: 0.3394, Recall: 0.0990, Revenue: 0.1816
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1924, Recall: 0.1121, Revenue: 0.1868
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0984, Recall: 0.1433, Revenue: 0.2233
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0602, Recall: 0.1754, Revenue: 0.2806
+Overall F1:0.1540, AUC:0.6448, F1-top:0.1953
+------------
+Validate at epoch 17
+CLS loss: 0.4034, REG loss: 0.0115
+Checking top 1% suspicious transactions: 710
+Precision: 0.3394, Recall: 0.0990, Revenue: 0.1828
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1945, Recall: 0.1133, Revenue: 0.1974
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0979, Recall: 0.1425, Revenue: 0.2526
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0636, Recall: 0.1852, Revenue: 0.2845
+Overall F1:0.1536, AUC:0.6472, F1-top:0.2016
+------------
+Validate at epoch 18
+CLS loss: 0.3754, REG loss: 0.0119
+Checking top 1% suspicious transactions: 710
+Precision: 0.3338, Recall: 0.0973, Revenue: 0.1843
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1924, Recall: 0.1121, Revenue: 0.1901
+Checking top 5% suspicious transactions: 3546
+Precision: 0.0993, Recall: 0.1446, Revenue: 0.2410
+Checking top 10% suspicious transactions: 7079
+Precision: 0.0617, Recall: 0.1795, Revenue: 0.3152
+Overall F1:0.1522, AUC:0.6381, F1-top:0.2022
+------------
+Validate at epoch 19
+CLS loss: 0.3879, REG loss: 0.0115
+Checking top 1% suspicious transactions: 710
+Precision: 0.3310, Recall: 0.0965, Revenue: 0.1755
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1959, Recall: 0.1142, Revenue: 0.1931
+Checking top 5% suspicious transactions: 3546
+Precision: 0.1043, Recall: 0.1520, Revenue: 0.2762
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0750, Recall: 0.2185, Revenue: 0.3369
+Overall F1:0.1484, AUC:0.6582, F1-top:0.2110
+/home/singh/wco/gnn_wco_wdate/gnn_wco/DATE/intermediary/saved_models/DATE-1685588917.007.pkl
+------------
+Validate at epoch 20
+CLS loss: 0.3807, REG loss: 0.0118
+Checking top 1% suspicious transactions: 710
+Precision: 0.3380, Recall: 0.0986, Revenue: 0.1773
+Checking top 2% suspicious transactions: 1419
+Precision: 0.1980, Recall: 0.1154, Revenue: 0.1900
+Checking top 5% suspicious transactions: 3544
+Precision: 0.1050, Recall: 0.1528, Revenue: 0.2847
+Checking top 10% suspicious transactions: 7092
+Precision: 0.0671, Recall: 0.1955, Revenue: 0.3225
+Overall F1:0.1542, AUC:0.6498, F1-top:0.2103
+
+--------Evaluating DATE model---------
+CLS loss: 0.3879, REG loss: 0.0115
+CLS loss: 0.2962, REG loss: 0.0092
+Checking top 1% suspicious transactions: 2749
+Precision: 0.1895, Recall: 0.0767, Revenue: 0.0994
+Checking top 2% suspicious transactions: 5497
+Precision: 0.1075, Recall: 0.0870, Revenue: 0.1142
+Checking top 5% suspicious transactions: 13741
+Precision: 0.0619, Recall: 0.1251, Revenue: 0.1828
+Checking top 10% suspicious transactions: 27480
+Precision: 0.0568, Recall: 0.2295, Revenue: 0.2668
+CLS loss: 0.2962, REG loss: 0.0092
+
+--------Evaluating the model---------
+Precision: 0.0619, Recall: 0.1251, Revenue: 0.1828

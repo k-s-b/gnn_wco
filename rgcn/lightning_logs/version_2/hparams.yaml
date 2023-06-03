@@ -1,0 +1,5 @@
+hidden_dim: 32
+input_dim: 1489
+n_relations: 2
+numLayers: 2
+useXGB: true

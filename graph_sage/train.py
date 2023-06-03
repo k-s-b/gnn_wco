@@ -3,7 +3,7 @@ import random
 import os
 from collections import defaultdict
 from datetime import timedelta
-from parser import get_parser
+from parser_wco import get_parser_wco
 
 import matplotlib.pyplot as plt
 import networkx as nx
@@ -34,19 +34,19 @@ from pygData_util import *
 from utils import *
 
 # load data
-parser = get_parser()
+parser = get_parser_wco()
 args = parser.parse_args()
 
 chosen_data = args.data
 log_name = "%sData" % chosen_data[-1]
 if chosen_data == 'real-n':
-    data = dataset.Ndata(path='/data1/roytsai/Custom-Semi-Supervised/data/ndata.csv')
+    data = dataset.Ndata(path='/home/singh/wco/data/ndata.csv')
 elif chosen_data == 'real-m':
-    data = dataset.Mdata(path='/data1/roytsai/Custom-Semi-Supervised/data/mdata.csv')
+    data = dataset.Mdata(path='/home/singh/wco/data/mdata.csv')
 elif chosen_data == 'real-t':
-    data = dataset.Tdata(path='/data1/roytsai/Custom-Semi-Supervised/data/tdata.csv')
+    data = dataset.Tdata(path='/home/singh/wco/data/tdata.csv')
 elif chosen_data == 'real-c':
-    data = dataset.Cdata(path='/data1/roytsai/Custom-Semi-Supervised/data/cdata.csv')
+    data = dataset.Cdata(path='/home/singh/wco/data/cdata.csv')
 
 # args
 seed = args.seed
@@ -56,6 +56,7 @@ dim = args.dim
 lr = args.lr
 weight_decay = args.l2
 initial_inspection_rate = args.initial_inspection_rate
+masking = args.masking
 train_begin = args.train_from 
 test_begin = args.test_from
 test_length = args.test_length
@@ -70,6 +71,8 @@ np.random.seed(seed)
 torch.manual_seed(seed)
 if torch.cuda.is_available():
     torch.cuda.manual_seed(seed)
+
+torch.backends.cudnn.benchmark = True
 
 assert initial_inspection_rate < 100, "for supervised setting, please set 99.9 instead of 100"
 assert initial_inspection_rate > 0,   "initial_inspection_rate should be greater than 0"
@@ -87,7 +90,7 @@ data.split(train_start_day, valid_start_day, test_start_day, test_end_day, valid
 data.featureEngineering()
 
 # prepare data
-categories=["importer.id","HS6"]
+categories=["importer.id","HS6", "office.id"]
 gdata = GraphData(data,use_xgb=True, categories=categories,pos_weight=pos_weight)
 
 stage = "train_lab"
@@ -255,6 +258,7 @@ model = PretrainGNN(input_dim, hidden_size, numLayers, useXGB=gdata.use_xgb)
 stacked_data = StackData(trainLab_data,unlab_data,valid_data, test_data)
 datamodule = UnsupData(stacked_data, sizes = sizes, batch_size=batch_size)
 trainer = Trainer(gpus=[gpu_id], max_epochs=args.pretrainstep)
+# trainer = Trainer(accelerator="gpu", devices=[gpu_id], max_epochs=args.pretrainstep)
 trainer.fit(model, train_dataloader=datamodule.train_dataloader())
 
 # model
@@ -263,6 +267,8 @@ class Predictor(LightningModule):
         super().__init__()
         self.gnn_encoder = PretrainGNN(input_dim, hidden_size, numLayers, useXGB)
         self.dim = hidden_dim * 2
+        
+        self.validation_step_outputs = []
         
         # output
         self.clsLayer = nn.Linear(self.dim,1) #GATConv(self.dim,1)
@@ -310,7 +316,7 @@ class Predictor(LightningModule):
         self.log('val_loss', valid_loss, on_step=True, on_epoch=True, sync_dist=True)
         return logits
     
-    def validation_epoch_end(self, val_step_outputs):
+    def validation_epoch_end(self, val_step_outputs):#
         predictions = torch.cat(val_step_outputs).detach().cpu().numpy().ravel()
         overall_f1, auc,f,pr, re, rev = metrics(predictions, self.data.valid_cls_label, self.data.valid_reg_label,None)
         f1_top = np.mean(f)
@@ -325,7 +331,7 @@ class Predictor(LightningModule):
     def test_step(self,batch, batch_idx):
         return self.validation_step(batch, batch_idx)
     
-    def test_epoch_end(self,val_step_outputs):
+    def test_epoch_end(self,val_step_outputs):#
         predictions = torch.cat(val_step_outputs).detach().cpu().numpy().ravel()
         self.save_prediction(predictions)
         overall_f1, auc,f,pr, re, rev = metrics(predictions, self.data.test_cls_label, self.data.test_reg_label,None)
@@ -370,7 +376,7 @@ logger = TensorBoardLogger("ssl_exp",name=log_name)
 logger.log_hyperparams(model.hparams, metrics={"F1-top":0})
 checkpoint_callback = ModelCheckpoint(
     monitor='F1-top',    
-    dirpath='/data1/roytsai/saved_model',
+    dirpath='./saved_model',
     filename='Analysis-%s-{F1-top:.4f}' % log_name,
     save_top_k=1,
     mode='max',
@@ -378,9 +384,19 @@ checkpoint_callback = ModelCheckpoint(
 trainer = Trainer(gpus=[gpu_id], max_epochs=epochs,
                  num_sanity_val_steps=0,
                   check_val_every_n_epoch=1,
-                  callbacks=[checkpoint_callback],
+                  callbacks=[checkpoint_callback,],
+                  progress_bar_refresh_rate=0
                  )
 trainer.fit(predictor, datamodule=datamodule)
+
+# trainer = Trainer(accelerator="gpu", devices=[gpu_id], max_epochs=epochs,
+#                  num_sanity_val_steps=0,
+#                   check_val_every_n_epoch=1,
+#                   callbacks=[checkpoint_callback],
+#                  )
+# trainer.fit(predictor, datamodule=datamodule)
+
+
 test_summary = trainer.test()
 
 # transform summary as dataframe for saving csv
