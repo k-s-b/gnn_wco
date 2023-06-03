@@ -1,6 +1,8 @@
 # GraphFC: Customs Fraud Detection with Label Scarcity
 
-This repo contains the PyTorch implementation for "GraphFC: Customs Fraud Detection with Label Scarcity"
+This repo contains the PyTorch implementation for "GraphFC: Customs Fraud Detection with Label Scarcity".  
+The paper along with performance analysis on three real customs datasets can found <a href="https://arxiv.org/abs/2305.11377v1">here</a>
+
 
 
 ## Model Architecture of GraphFC
